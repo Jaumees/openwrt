@@ -8,16 +8,20 @@ on:
   push:
     branches: 
       - master
-  schedule:
-    - cron: '0 1 * * *'
+  #schedule:
+  #  - cron: '0 1 * * *'
   # release:
   #   types: [published]
+
+  watch:
+    types: [started]
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
 
@@ -53,7 +57,7 @@ jobs:
        run: |
         cd openwrt
         # 修改LAN的IP地址
-        # sed -i 's/192.168.1.1/192.168.11.1/g' package/base-files/files/bin/config_generate
+        sed -i 's/192.168.1.1/192.168.12.1/g' package/base-files/files/bin/config_generate
         rm -f ./.config*
         touch ./.config
         #
@@ -96,7 +100,7 @@ jobs:
         # EOF        
         # 取消编译VMware镜像: 
         cat >> .config <<EOF
-        # CONFIG_VMDK_IMAGES is not set
+        CONFIG_VMDK_IMAGES is not set
         EOF
         # IPv6支持:
         cat >> .config <<EOF
@@ -122,78 +126,81 @@ jobs:
         # 固件空间大小:
         cat >> .config <<EOF
         CONFIG_TARGET_KERNEL_PARTSIZE=20
-        CONFIG_TARGET_ROOTFS_PARTSIZE=860
+        CONFIG_TARGET_ROOTFS_PARTSIZE=512
         CONFIG_ZSTD_OPTIMIZE_O3=y
         EOF
         # 常用LuCI插件选择:
         cat >> .config <<EOF
-        CONFIG_PACKAGE_autosamba=y
-        CONFIG_PACKAGE_luci-app-samba=y
+        CONFIG_PACKAGE_autosamba is not set
+        CONFIG_PACKAGE_luci-app-samba is not set
         # CONFIG_PACKAGE_luci-app-accesscontrol is not set
-        # CONFIG_PACKAGE_luci-app-adbyby-plus is not set
+        CONFIG_PACKAGE_luci-app-adbyby-plus is not set
         CONFIG_PACKAGE_luci-app-adguardhome=y
-        CONFIG_PACKAGE_luci-app-advanced=y
-        CONFIG_PACKAGE_luci-app-aria2=y
-        CONFIG_PACKAGE_luci-app-autopoweroff=y
-        CONFIG_PACKAGE_luci-app-beardropper=y
-        CONFIG_PACKAGE_luci-app-clash=y
-        CONFIG_PACKAGE_luci-app-control-mia=y
-        CONFIG_PACKAGE_luci-app-control-timewol=y
-        CONFIG_PACKAGE_luci-app-control-webrestriction=y
-        CONFIG_PACKAGE_luci-app-control-weburl=y
-        CONFIG_PACKAGE_luci-app-cpulimit=y
-        CONFIG_PACKAGE_luci-app-eqos=y
-        CONFIG_PACKAGE_luci-app-familycloud=y
-        CONFIG_PACKAGE_luci-app-fileassistant=m
-        CONFIG_PACKAGE_luci-app-filetransfer=y
-        CONFIG_PACKAGE_luci-app-frpc=y
-        CONFIG_PACKAGE_luci-app-hd-idle=y
-        CONFIG_PACKAGE_luci-app-ipsec-vpnd=y
-        CONFIG_PACKAGE_luci-app-jd-dailybonus=y
-        CONFIG_PACKAGE_luci-app-kodexplorer=y
-        CONFIG_PACKAGE_luci-app-koolddns=y
-        CONFIG_PACKAGE_luci-app-koolproxyR=y
-        CONFIG_PACKAGE_luci-app-minidlna=y
-        CONFIG_PACKAGE_luci-app-mwan3=y
-        CONFIG_PACKAGE_luci-app-netdata=y
-        # CONFIG_PACKAGE_luci-app-nlbwmon is not set
-        CONFIG_PACKAGE_luci-app-oaf=y
-        CONFIG_PACKAGE_luci-app-openclash=y
-        CONFIG_PACKAGE_luci-app-passwall=y
-        CONFIG_PACKAGE_luci-app-qbittorrent=y
-        CONFIG_PACKAGE_luci-app-serverchan=y
+        CONFIG_PACKAGE_luci-app-advanced is not set
+        CONFIG_PACKAGE_luci-app-aria2 is not set
+        CONFIG_PACKAGE_luci-app-autopoweroff is not set
+        CONFIG_PACKAGE_luci-app-beardropper is not set
+        CONFIG_PACKAGE_luci-app-clash is not set
+        CONFIG_PACKAGE_luci-app-control-mia is not set
+        CONFIG_PACKAGE_luci-app-control-timewol is not set
+        CONFIG_PACKAGE_luci-app-control-webrestriction is not set
+        CONFIG_PACKAGE_luci-app-control-weburl is not set
+        CONFIG_PACKAGE_luci-app-cpulimit is not set
+        CONFIG_PACKAGE_luci-app-eqos is not set
+        CONFIG_PACKAGE_luci-app-familycloud is not set
+        CONFIG_PACKAGE_luci-app-fileassistant is not set
+        CONFIG_PACKAGE_luci-app-filetransfer is not set
+        CONFIG_PACKAGE_luci-app-frpc is not set
+        CONFIG_PACKAGE_luci-app-hd-idle is not set
+        CONFIG_PACKAGE_luci-app-ipsec-vpnd is not set
+        CONFIG_PACKAGE_luci-app-jd-dailybonus is not set
+        CONFIG_PACKAGE_luci-app-kodexplorer is not set
+        CONFIG_PACKAGE_luci-app-koolddns is not set
+        CONFIG_PACKAGE_luci-app-koolproxyR is not set
+        CONFIG_PACKAGE_luci-app-minidlna is not set
+        CONFIG_PACKAGE_luci-app-mwan3 is not set
+        CONFIG_PACKAGE_luci-app-netdata is not set
+        CONFIG_PACKAGE_luci-app-nlbwmon is not set
+        CONFIG_PACKAGE_luci-app-oaf is not set
+        CONFIG_PACKAGE_luci-app-openclash is not set
+        CONFIG_PACKAGE_luci-app-passwall is not set
+        CONFIG_PACKAGE_luci-app-qbittorrent is not set
+        CONFIG_PACKAGE_luci-app-serverchan is not set
         CONFIG_PACKAGE_luci-app-smartdns=y
-        CONFIG_PACKAGE_luci-app-smartinfo=y
-        CONFIG_PACKAGE_luci-app-softethervpn=y
-        CONFIG_PACKAGE_luci-app-syncdial=y
+        CONFIG_PACKAGE_luci-app-smartinfo is not set
+        CONFIG_PACKAGE_luci-app-softethervpn is not set
+        CONFIG_PACKAGE_luci-app-syncdial is not set
         CONFIG_PACKAGE_luci-app-sfe=y
-        CONFIG_PACKAGE_luci-app-transmission=y
-        CONFIG_PACKAGE_luci-app-ttyd=y
-        CONFIG_PACKAGE_luci-app-usb-printer=y
-        CONFIG_PACKAGE_luci-app-vlmcsd=y
-        CONFIG_PACKAGE_luci-app-vsftpd=y
-        CONFIG_PACKAGE_luci-app-vssr=y
+        CONFIG_PACKAGE_luci-app-transmission is not set
+        CONFIG_PACKAGE_luci-app-ttyd is not set
+        CONFIG_PACKAGE_luci-app-usb-printer is not set
+        CONFIG_PACKAGE_luci-app-vlmcsd is not set
+        CONFIG_PACKAGE_luci-app-vsftpd is not set
+        CONFIG_PACKAGE_luci-app-vssr is not set
         CONFIG_PACKAGE_luci-app-webadmin=y
-        CONFIG_PACKAGE_luci-app-wifischedule=m
-        CONFIG_PACKAGE_luci-app-wrtbwmon=y
-        CONFIG_PACKAGE_luci-app-xlnetacc=y
-        CONFIG_PACKAGE_luci-app-zerotier=y
+        CONFIG_PACKAGE_luci-app-wifischedule is not set
+        CONFIG_PACKAGE_luci-app-wrtbwmon is not set
+        CONFIG_PACKAGE_luci-app-xlnetacc is not set
+        CONFIG_PACKAGE_luci-app-zerotier is not set
         # CONFIG_PACKAGE_luci-app-uhttpd  is not set
-        CONFIG_LUCI_LANG_en=y
+        CONFIG_PACKAGE_luci-app-unblockmusic=y
+        CONFIG_UnblockNeteaseMusic_Go is not set
+        CONFIG_UnblockNeteaseMusic_NodeJS=y
+        CONFIG_LUCI_LANG_zh-cn=y
         EOF
         # nginx相关:
         cat >> .config <<EOF
-        CONFIG_PACKAGE_luci-ssl-nginx=y
-        CONFIG_NGINX_HTTP_V2=y
-        CONFIG_NGINX_DAV=y
-        CONFIG_NGINX_NAXSI=n
-        CONFIG_PACKAGE_luci=n # uhttpd服务
+        CONFIG_PACKAGE_luci-ssl-nginx is not set
+        CONFIG_NGINX_HTTP_V2 is not set
+        CONFIG_NGINX_DAV is not set
+        CONFIG_NGINX_NAXSI is not set
+        CONFIG_PACKAGE_luci=y # uhttpd服务
         EOF
         # LuCI主题:
         cat >> .config <<EOF
         CONFIG_PACKAGE_luci-theme-argon=y
-        CONFIG_PACKAGE_luci-theme-opentomcat=y
-        CONFIG_PACKAGE_luci-theme-btmod=y
+        CONFIG_PACKAGE_luci-theme-opentomcat is not set
+        CONFIG_PACKAGE_luci-theme-btmod is not set
         EOF
         # 常用软件包:
         cat >> .config <<EOF
@@ -204,20 +211,20 @@ jobs:
         EOF
         # 常用驱动:
         cat >> .config <<EOF   
-        CONFIG_PACKAGE_kmod-vmxnet3=y
-        CONFIG_PACKAGE_kmod-igbvf=y
-        CONFIG_PACKAGE_kmod-ixgbe=y
-        CONFIG_PACKAGE_kmod-pcnet32=y
-        CONFIG_PACKAGE_kmod-r8125=y
+        CONFIG_PACKAGE_kmod-vmxnet3 is not set
+        CONFIG_PACKAGE_kmod-igbvf is not set
+        CONFIG_PACKAGE_kmod-ixgbe is not set
+        CONFIG_PACKAGE_kmod-pcnet32 is not set
+        CONFIG_PACKAGE_kmod-r8125 is not set
         CONFIG_PACKAGE_kmod-r8168=y
-        CONFIG_PACKAGE_kmod-8139cp=y
-        CONFIG_PACKAGE_kmod-8139too=y
-        CONFIG_PACKAGE_kmod-i40e=y
-        CONFIG_PACKAGE_kmod-i40evf=y
-        CONFIG_PACKAGE_kmod-usb-net=y
-        CONFIG_PACKAGE_kmod-usb-net-rtl8150=y
-        CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
-        CONFIG_PACKAGE_kmod-usb-net-asix-ax88179=y
+        CONFIG_PACKAGE_kmod-8139cp is not set
+        CONFIG_PACKAGE_kmod-8139too is not set
+        CONFIG_PACKAGE_kmod-i40e is not set
+        CONFIG_PACKAGE_kmod-i40evf is not set
+        CONFIG_PACKAGE_kmod-usb-net is not set
+        CONFIG_PACKAGE_kmod-usb-net-rtl8150 is not set
+        CONFIG_PACKAGE_kmod-usb-net-rtl8152 is not set
+        CONFIG_PACKAGE_kmod-usb-net-asix-ax88179 is not set
         EOF
         # 
         # ========================固件定制部分结束========================
@@ -256,8 +263,8 @@ jobs:
           name: SirpdboyOpenWrt-IPV6-Firmware
           path: ./openwrt/bin/targets/
           
-     - name: Upload  IPK
-       uses: actions/upload-artifact@master
-       with:
-          name: SirpdboyOpenWrt-IPV6-Ipk
-          path: ./openwrt/bin/packages/
+     #- name: Upload  IPK
+     #  uses: actions/upload-artifact@master
+     #  with:
+     #     name: SirpdboyOpenWrt-IPV6-Ipk
+     #     path: ./openwrt/bin/packages/

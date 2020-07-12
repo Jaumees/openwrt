@@ -9,7 +9,7 @@ on:
     branches: 
       - master
   schedule:
-    - cron: '0 18 * * *'
+    - cron: '0 1 * * *'
   # release:
   #   types: [published]
 
@@ -119,17 +119,22 @@ jobs:
         CONFIG_PACKAGE_kmod-usb2-pci=y
         CONFIG_PACKAGE_kmod-usb3=y
         EOF
+        # 固件空间大小:
+        cat >> .config <<EOF
+        CONFIG_TARGET_KERNEL_PARTSIZE=20
+        CONFIG_TARGET_ROOTFS_PARTSIZE=860
+        CONFIG_ZSTD_OPTIMIZE_O3=y
+        EOF
         # 常用LuCI插件选择:
         cat >> .config <<EOF
+        CONFIG_PACKAGE_autosamba=y
+        CONFIG_PACKAGE_luci-app-samba=y
         # CONFIG_PACKAGE_luci-app-accesscontrol is not set
-        CONFIG_PACKAGE_luci-app-adblock=m
+        # CONFIG_PACKAGE_luci-app-adbyby-plus is not set
         CONFIG_PACKAGE_luci-app-adguardhome=y
         CONFIG_PACKAGE_luci-app-advanced=y
-        CONFIG_PACKAGE_luci-app-airplay2=m
-        CONFIG_PACKAGE_luci-app-amule=m
         CONFIG_PACKAGE_luci-app-aria2=y
         CONFIG_PACKAGE_luci-app-autopoweroff=y
-        CONFIG_PACKAGE_luci-app-baidupcs-web=m
         CONFIG_PACKAGE_luci-app-beardropper=y
         CONFIG_PACKAGE_luci-app-clash=y
         CONFIG_PACKAGE_luci-app-control-mia=y
@@ -137,62 +142,52 @@ jobs:
         CONFIG_PACKAGE_luci-app-control-webrestriction=y
         CONFIG_PACKAGE_luci-app-control-weburl=y
         CONFIG_PACKAGE_luci-app-cpulimit=y
-        CONFIG_PACKAGE_luci-app-diskman=m
-        CONFIG_PACKAGE_luci-app-dnscrypt-proxy=m
-        CONFIG_PACKAGE_luci-app-dnsforwarder=m
-        CONFIG_PACKAGE_luci-app-docker=m
         CONFIG_PACKAGE_luci-app-eqos=y
         CONFIG_PACKAGE_luci-app-familycloud=y
-        CONFIG_PACKAGE_luci-app-fileassistant=y
+        CONFIG_PACKAGE_luci-app-fileassistant=m
         CONFIG_PACKAGE_luci-app-filetransfer=y
         CONFIG_PACKAGE_luci-app-frpc=y
-        CONFIG_PACKAGE_luci-app-frps=m
-        CONFIG_PACKAGE_luci-app-guest-wifi=m
         CONFIG_PACKAGE_luci-app-hd-idle=y
         CONFIG_PACKAGE_luci-app-ipsec-vpnd=y
-        CONFIG_PACKAGE_luci-app-jd-dailybonus=m
+        CONFIG_PACKAGE_luci-app-jd-dailybonus=y
         CONFIG_PACKAGE_luci-app-kodexplorer=y
         CONFIG_PACKAGE_luci-app-koolddns=y
         CONFIG_PACKAGE_luci-app-koolproxyR=y
         CONFIG_PACKAGE_luci-app-minidlna=y
-        CONFIG_PACKAGE_luci-app-music-remote-center=m
         CONFIG_PACKAGE_luci-app-mwan3=y
-        CONFIG_PACKAGE_luci-app-mwan3helper=m
         CONFIG_PACKAGE_luci-app-netdata=y
-        CONFIG_PACKAGE_luci-app-nft-qos=m
+        # CONFIG_PACKAGE_luci-app-nlbwmon is not set
         CONFIG_PACKAGE_luci-app-oaf=y
         CONFIG_PACKAGE_luci-app-openclash=y
-        CONFIG_PACKAGE_luci-app-openvpn=m
-        CONFIG_PACKAGE_luci-app-openvpn-server=m
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_luci-app-qbittorrent=y
-        CONFIG_PACKAGE_luci-app-qos=m
-        CONFIG_PACKAGE_luci-app-rclone=m
-        CONFIG_PACKAGE_luci-app-samba4=m
         CONFIG_PACKAGE_luci-app-serverchan=y
-        CONFIG_PACKAGE_luci-app-shairplay=m
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_luci-app-smartinfo=y
-        CONFIG_PACKAGE_luci-app-softethervpn=m
-        CONFIG_PACKAGE_luci-app-sqm=m
-        CONFIG_PACKAGE_luci-app-ssrserver-python=m
+        CONFIG_PACKAGE_luci-app-softethervpn=y
         CONFIG_PACKAGE_luci-app-syncdial=y
-        CONFIG_PACKAGE_luci-app-tinyproxy=m
+        CONFIG_PACKAGE_luci-app-sfe=y
         CONFIG_PACKAGE_luci-app-transmission=y
-        CONFIG_PACKAGE_luci-app-ttyd=m
-        CONFIG_PACKAGE_luci-app-uhttpd=m
+        CONFIG_PACKAGE_luci-app-ttyd=y
         CONFIG_PACKAGE_luci-app-usb-printer=y
-        CONFIG_PACKAGE_luci-app-v2ray-server=m
-        CONFIG_PACKAGE_luci-app-verysync=m
         CONFIG_PACKAGE_luci-app-vlmcsd=y
         CONFIG_PACKAGE_luci-app-vsftpd=y
         CONFIG_PACKAGE_luci-app-vssr=y
         CONFIG_PACKAGE_luci-app-webadmin=y
         CONFIG_PACKAGE_luci-app-wifischedule=m
-        CONFIG_PACKAGE_luci-app-wrtbwmon=m
+        CONFIG_PACKAGE_luci-app-wrtbwmon=y
         CONFIG_PACKAGE_luci-app-xlnetacc=y
         CONFIG_PACKAGE_luci-app-zerotier=y
-        # CONFIG_PACKAGE_luci-app-adbyby-plus is not set
+        # CONFIG_PACKAGE_luci-app-uhttpd  is not set
+        CONFIG_LUCI_LANG_en=y
+        EOF
+        # nginx相关:
+        cat >> .config <<EOF
+        CONFIG_PACKAGE_luci-ssl-nginx=y
+        CONFIG_NGINX_HTTP_V2=y
+        CONFIG_NGINX_DAV=y
+        CONFIG_NGINX_NAXSI=n
+        CONFIG_PACKAGE_luci=n # uhttpd服务
         EOF
         # LuCI主题:
         cat >> .config <<EOF
@@ -207,10 +202,22 @@ jobs:
         CONFIG_PACKAGE_screen=y
         CONFIG_PACKAGE_wget=y
         EOF
-        # 固件空间大小:
-        cat >> .config <<EOF
-        CONFIG_TARGET_ROOTFS_PARTSIZE=860
-        CONFIG_ZSTD_OPTIMIZE_O3=y
+        # 常用驱动:
+        cat >> .config <<EOF   
+        CONFIG_PACKAGE_kmod-vmxnet3=y
+        CONFIG_PACKAGE_kmod-igbvf=y
+        CONFIG_PACKAGE_kmod-ixgbe=y
+        CONFIG_PACKAGE_kmod-pcnet32=y
+        CONFIG_PACKAGE_kmod-r8125=y
+        CONFIG_PACKAGE_kmod-r8168=y
+        CONFIG_PACKAGE_kmod-8139cp=y
+        CONFIG_PACKAGE_kmod-8139too=y
+        CONFIG_PACKAGE_kmod-i40e=y
+        CONFIG_PACKAGE_kmod-i40evf=y
+        CONFIG_PACKAGE_kmod-usb-net=y
+        CONFIG_PACKAGE_kmod-usb-net-rtl8150=y
+        CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
+        CONFIG_PACKAGE_kmod-usb-net-asix-ax88179=y
         EOF
         # 
         # ========================固件定制部分结束========================
@@ -246,7 +253,7 @@ jobs:
      - name: Upload firmware
        uses: actions/upload-artifact@master
        with:
-          name: SirpdboyOpenWrt-IPV6-Firmware880M
+          name: SirpdboyOpenWrt-IPV6-Firmware
           path: ./openwrt/bin/targets/
           
      - name: Upload  IPK
